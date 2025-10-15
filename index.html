@@ -1,1 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#4F46E5">
+    <meta name="description" content="BreatheEasy - Monitor air quality and manage asthma health">
+    <title>BreatheEasy - Air Quality & Asthma Care</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+    <nav class="container">
+        <div class="logo">
+            <img src="src/logo.png" alt="BreatheEasy Logo" class="logo-img">
+            <span>BreatheEasy</span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="#dashboard">Dashboard</a></li>
+            <li><a href="#diary">My Diary</a></li>
+            <li><a href="#learn">Learn & Resources</a></li> <li><a href="#about">About</a></li>
+            <li><a href="#team">Team</a></li>
+        </ul>
+        <button class="menu-toggle" id="menuToggle">☰</button>
+    </nav>
+</header>
+
+
+    <section class="hero">
+        <div class="container hero-container">
+            <div class="hero-text">
+                <h1>Breathe Easier, Live Better</h1>
+                <p>Real-time air quality monitoring and personalized asthma care at your fingertips</p>
+                <button class="cta-button" id="getStarted">Get Started</button>
+            </div>
+            <div class="hero-image">
+                <svg width="300" height="300" viewBox="0 0 300 300">
+                    <circle cx="150" cy="150" r="140" fill="rgba(255,255,255,0.1)" stroke="white" stroke-width="2"/>
+                    <circle cx="150" cy="150" r="100" fill="rgba(255,255,255,0.2)" stroke="white" stroke-width="2"/>
+                    <path d="M150 80 L150 220 M80 150 L220 150" stroke="white" stroke-width="3" stroke-linecap="round"/>
+                    <circle cx="150" cy="150" r="30" fill="white"/>
+                </svg>
+            </div>
+        </div>
+    </section>
+
+    <main>
+        <section id="dashboard" class="aqi-dashboard">
+            <div class="container">
+                <div class="aqi-header">
+                    <h2>Current Air Quality</h2>
+                    <div class="location">
+                        <span>📍</span>
+                        <span id="userLocation">Detecting location...</span>
+                    </div>
+                </div>
+                <div class="city-selector">
+                    <label for="citySelect">Select City:</label>
+                    <select id="citySelect">
+                        <option value="Sangamner">Sangamner</option>
+                        <option value="Akole">Akole</option>
+                        <option value="Nashik">Nashik</option>
+                        <option value="Nagar">Nagar</option>
+                        <option value="Sinner">Sinner</option>
+                    </select>
+                </div>
+
+
+                <div class="aqi-card" id="aqiCard">
+                    <div class="aqi-value" id="aqiValue">--</div>
+                    <div class="aqi-status" id="aqiStatus">Loading...</div>
+                    <div class="aqi-description" id="aqiDescription">Fetching air quality data...</div>
+                    <div class="last-updated">Last updated: <span id="lastUpdated">--</span></div>
+                </div>
+
+                <div class="alert-section" id="alertSection" style="display: none;">
+                    <div class="alert-icon">⚠</div>
+                    <div class="alert-content">
+                        <h3>Air Quality Alert</h3>
+                        <p id="alertMessage">Poor air quality detected. Stay indoors and use your inhaler if needed.</p>
+                    </div>
+                </div>
+
+                <h3 class="section-title">Pollutant Levels</h3>
+                <div class="pollutants-grid">
+                    <div class="pollutant-card">
+                        <div class="pollutant-name">PM2.5</div>
+                        <div class="pollutant-value" id="pm25Value">--</div>
+                        <div class="pollutant-unit">μg/m³</div>
+                        <div class="pollutant-bar">
+                            <div class="pollutant-fill" id="pm25Bar" style="width: 0%; background: #10B981;"></div>
+                        </div>
+                    </div>
+                    <div class="pollutant-card">
+                        <div class="pollutant-name">PM10</div>
+                        <div class="pollutant-value" id="pm10Value">--</div>
+                        <div class="pollutant-unit">μg/m³</div>
+                        <div class="pollutant-bar">
+                            <div class="pollutant-fill" id="pm10Bar" style="width: 0%; background: #3B82F6;"></div>
+                        </div>
+                    </div>
+                    <div class="pollutant-card">
+                        <div class="pollutant-name">NO₂</div>
+                        <div class="pollutant-value" id="no2Value">--</div>
+                        <div class="pollutant-unit">μg/m³</div>
+                        <div class="pollutant-bar">
+                            <div class="pollutant-fill" id="no2Bar" style="width: 0%; background: #F59E0B;"></div>
+                        </div>
+                    </div>
+                    <div class="pollutant-card">
+                        <div class="pollutant-name">O₃</div>
+                        <div class="pollutant-value" id="o3Value">--</div>
+                        <div class="pollutant-unit">μg/m³</div>
+                        <div class="pollutant-bar">
+                            <div class="pollutant-fill" id="o3Bar" style="width: 0%; background: #8B5CF6;"></div>
+                        </div>
+                    </div>
+                </div>
+                 <div class="theory-box aqi-explanation">
+                    <h3>Understanding AQI and Pollutants (Theory)</h3>
+                    <p>The *Air Quality Index (AQI)* is a color-coded measure that indicates how clean or polluted the air is. It ranges from Good (0-50) to Hazardous (301+). For asthma patients, any level above 'Moderate' (51-100) can be a trigger.</p>
+                    <ul>
+                        <li>*PM2.5 & PM10 (Particulate Matter):* Tiny particles that can penetrate deep into the lungs. They are major irritants for asthma and are often produced by traffic, construction, and burning.</li>
+                        <li>*NO₂ (Nitrogen Dioxide):* A gas from vehicle exhaust and power plants. High levels can inflame the airways.</li>
+                        <li>*O₃ (Ozone):* A gas, particularly at ground level, that can cause coughing, throat irritation, and breathing difficulty, even in healthy individuals.</li>
+                    </ul>
+                </div>
+
+
+                <div class="chart-container">
+                    <h3 class="section-title">24-Hour Trend</h3>
+                    <canvas id="aqiChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <section id="diary" class="diary-section">
+            <div class="container">
+                <h2>My Asthma Diary</h2>
+                <p class="section-subtitle">Track your symptoms and correlate with air quality</p>
+
+                <div class="diary-form">
+                    <div class="form-group">
+                        <label>How are you feeling today?</label>
+                        <div class="emoji-selector">
+                            <button class="emoji-btn" data-feeling="great">😊</button>
+                            <button class="emoji-btn" data-feeling="good">🙂</button>
+                            <button class="emoji-btn" data-feeling="okay">😐</button>
+                            <button class="emoji-btn" data-feeling="poor">😟</button>
+                            <button class="emoji-btn" data-feeling="bad">😰</button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Peak Flow Reading (L/min)</label>
+                        <input type="number" id="peakFlow" placeholder="e.g., 400" class="form-input">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Symptoms</label>
+                        <div class="checkbox-group">
+                            <label><input type="checkbox" value="wheezing"> Wheezing</label>
+                            <label><input type="checkbox" value="cough"> Cough</label>
+                            <label><input type="checkbox" value="shortness"> Shortness of breath</label>
+                            <label><input type="checkbox" value="chest"> Chest tightness</label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Notes</label>
+                        <textarea id="diaryNotes" placeholder="Any additional notes..." class="form-textarea"></textarea>
+                    </div>
+
+                    <button class="btn-primary" id="saveDiary">Save Entry</button>
+                </div>
+
+                <div class="diary-history">
+                    <h3>Recent Entries</h3>
+                    <div id="diaryEntries" class="entries-list">
+                        </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="learn" class="features-section">
+            <div class="container">
+                <h2 class="text-center">Learn & Resources: Comprehensive Asthma Care</h2>
+                <p class="section-subtitle text-center">Everything you need to manage your respiratory health</p>
+
+                <div class="features-grid">
+                    <div class="feature-card"><div class="feature-icon">📊</div><h3>Real-Time Monitoring</h3><p>Track air quality levels in your area with live updates and detailed pollutant information</p></div>
+                    <div class="feature-card"><div class="feature-icon">🔔</div><h3>Smart Alerts</h3><p>Receive personalized notifications when air quality drops below safe levels for you</p></div>
+                    <div class="feature-card"><div class="feature-icon">📝</div><h3>Symptom Tracking</h3><p>Log your daily symptoms and peak flow readings to identify patterns and triggers</p></div>
+                    <div class="feature-card"><div class="feature-icon">🗺</div><h3>Safe Zone Maps</h3><p>Discover areas with better air quality and plan your outdoor activities accordingly</p></div>
+                   <div class="feature-card"><div class="feature-icon">👥</div><h3>Community Support</h3><p>Connect with others, share experiences, and learn from the asthma community</p></div>
+                </div>
+
+                <div class="theory-box asthma-tips">
+                    <h3 class="section-title">Asthma Management Tips & Education 📚</h3>
+                    <div class="tips-grid">
+                        <div class="tip-card">
+                            <h4>What is Asthma?</h4>
+                            <p>Asthma is a chronic lung disease that inflames and narrows the airways, making breathing difficult. Symptoms include *wheezing, shortness of breath, chest tightness, and coughing*.</p>
+                        </div>
+                        <div class="tip-card">
+                            <h4>Air Quality Triggers</h4>
+                            <p>For most asthma patients, the key triggers in poor air quality are *high levels of PM2.5, Ozone (O₃), and NO₂*. Using your BreatheEasy dashboard helps you anticipate and avoid high-risk days.</p>
+                        </div>
+                         <div class="tip-card">
+                            <h4>The Peak Flow Meter</h4>
+                            <p>A simple device used to measure how fast you can push air out of your lungs. Tracking this daily helps you *monitor your asthma control* and predict an attack before severe symptoms begin. It's vital for your Asthma Action Plan.</p>
+                        </div>
+                        <div class="tip-card">
+                            <h4>Controller vs. Reliever</h4>
+                            <p>Asthma medications are generally split into two types: *Controller* (taken daily to prevent symptoms) and *Reliever* (taken for quick relief during an attack). *Always* follow your doctor's prescribed action plan.</p>
+                        </div>
+                        <div class="tip-card">
+                            <h4>Indoor Air Quality</h4>
+                            <p>Don't forget indoor triggers! Dust mites, pet dander, mold, and strong scents (cleaners, perfumes) can also cause flare-ups. Use *HEPA filters* and keep humidity low to manage these.</p>
+                        </div>
+                        <div class="tip-card">
+                            <h4>Exercise & Asthma</h4>
+                            <p>Physical activity is important, but if you have *Exercise-Induced Bronchoconstriction (EIB)*, always use your reliever inhaler 15-30 minutes before exercising, especially when the AQI is high.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+    <section id="about" class="about-section">
+    <div class="container">
+        <h2>About BreatheEasy</h2>
+        <p class="section-subtitle">
+            BreatheEasy is your personal companion for better respiratory health. 
+            Monitor real-time air quality, track asthma symptoms, and receive smart alerts 
+            to make informed decisions for your wellbeing. We are built on the principle of 
+            *preventative care through data*.
+        </p>
+        <div class="about-features">
+            <div class="about-card">
+                <div class="about-icon">🌬</div>
+                <h3>Real-Time Air Quality</h3>
+                <p>Get up-to-date air quality information wherever you are, with clear indicators and pollutant levels.</p>
+            </div>
+            <div class="about-card">
+                <div class="about-icon">📝</div>
+                <h3>Symptom Tracking</h3>
+                <p>Log your daily symptoms, peak flow readings, and notes to identify triggers and patterns over time. This helps you and your doctor fine-tune your treatment plan.</p>
+            </div>
+            <div class="about-card">
+                <div class="about-icon">🔔</div>
+                <h3>Smart Alerts</h3>
+                <p>Receive notifications when air quality drops below safe levels, helping you plan activities safely, and giving you crucial time to take *preventative medication*.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="asthma-symptoms" class="symptoms-section">
+    <div class="container">
+        <h2>Symptoms of Asthma</h2>
+        <p class="section-subtitle">
+            Common signs and symptoms to help you recognize asthma early and during a flare-up.
+        </p>
+        <div class="symptoms-grid">
+            <div class="symptom-card">
+                <img src="src/i1.jpg" alt="Shortness of Breath" class="symptom-img">
+                <h3>Shortness of Breath</h3>
+                <p>Difficulty breathing, often feeling like you can't get enough air, especially during physical activity or at night.</p>
+            </div>
+            <div class="symptom-card">
+                <img src="src/i2.jpg" alt="Coughing" class="symptom-img">
+                <h3>Coughing</h3>
+                <p>Frequent, sometimes chronic, coughing. It can be worse at night, disrupting sleep, or be triggered by cold air or laughter.</p>
+            </div>
+            <div class="symptom-card">
+                <img src="src/i3.jpg" alt="Wheezing" class="symptom-img">
+                <h3>Wheezing</h3>
+                <p>A high-pitched, whistling sound when exhaling, caused by narrowed and inflamed airways. This is a classic sign of an asthma attack.</p>
+            </div>
+            <div class="symptom-card">
+                <img src="src/i4.jpg" alt="Chest Tightness" class="symptom-img">
+                <h3>Chest Tightness</h3>
+                <p>A feeling of pressure or squeezing in the chest, which can be alarming and is a sign that the airways are constricting.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<section id="team" class="team-section">
+    <div class="container">
+        <h2>Meet Our Team</h2>
+        <p class="section-subtitle">
+            A group of passionate individuals dedicated to improving respiratory health through technology and education.
+        </p>
+        <div class="team-grid">
+            <div class="team-member">
+                <div class="team-emoji">👩‍💻</div>
+                <h3>Tejswini Gunjal</h3>
+                <p>Lead Developer & Air Quality Analyst</p>
+            </div>
+            <div class="team-member">
+                <div class="team-emoji">👩‍💻</div>
+                <h3>Ishwari Gunjal</h3>
+                <p>UX/UI Designer & Patient Advocacy</p>
+            </div>
+            <div class="team-member">
+                <div class="team-emoji">👩‍💻</div>
+                <h3>Bhakti Gunjal</h3>
+                <p>Data Scientist & Backend Lead</p>
+            </div>
+            <div class="team-member">
+                <div class="team-emoji">👩‍💻</div>
+                <h3>Kajal Jadhav</h3>
+                <p>Front-End Engineer & Content Creator</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+    <footer>
+        <div class="container footer-container">
+            <div class="footer-columns">
+                <div class="footer-brand">
+                    <h4>BreatheEasy</h4>
+                    <p>Your companion for better respiratory health</p>
+                </div>
+                <div class="footer-links">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="#dashboard">Dashboard</a></li>
+                        <li><a href="#diary">My Diary</a></li>
+                        <li><a href="#learn">Resources</a></li>
+                        <li><a href="#about">About Us</a></li>
+                    </ul>
+                </div>
+                <div class="footer-support">
+                    <h4>Support</h4>
+                    <ul>
+                        <li><a href="#">Help Center</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                        <li><a href="#">Contact Us</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 BreatheEasy. All rights reserved. | Always consult your doctor for medical advice.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
 
